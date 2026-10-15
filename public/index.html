@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+  <meta name="theme-color" content="#0f172a" >
+  <meta name="apple-mobile-web-app-capable" content="yes" >
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" >
+  <meta name="apple-mobile-web-app-title" content="V60 Flash Brew" >
+  <title>V60 Flash Brew Lab — وصفات قهوة V60</title>
+  <meta name="description" content="وصفات قهوة V60 الساخنة والمثلجة مع مؤقت تحضير خطوة بخطوة، حاسبة نسبة، ومختبر لضبط ماكينة Philips EP2224/43." >
+  <link rel="manifest" href="manifest.json" >
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" >
+  <link rel="apple-touch-icon" href="icon-192.png" >
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --violet: #a855f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding: 14px; max-width: 900px; margin: 0 auto; line-height: 1.5; }
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); }
+    .title-wrap h1 { font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .title-wrap p { font-size: 0.82rem; color: var(--muted); margin-top: 3px; }
+    .badge { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.35); padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+
+    /* Presets */
+    .presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 14px; }
+    .preset-btn { background: var(--card); color: var(--text); border: 1px solid var(--card-border); padding: 9px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
+    .preset-btn:hover, .preset-btn.active { border-color: var(--accent); background: rgba(56, 189, 248, 0.14); color: #fff; }
+
+    /* KPIs */
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    .kpi-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; position: relative; overflow: hidden; }
+    .kpi-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+    .kpi-value { font-size: 1.35rem; font-weight: 800; color: #fff; display: flex; align-items: baseline; gap: 5px; }
+    .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+    /* Main Grid */
+    .main-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 14px; }
+    @media (min-width: 768px) { .main-grid { grid-template-columns: 1.05fr 1fr; } }
+    .panel { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; }
+    .panel-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Controls */
+    .control-group { margin-bottom: 16px; }
+    .control-group:last-child { margin-bottom: 0; }
+    .control-header { display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 7px; font-weight: 600; }
+    .control-val { color: var(--accent); font-weight: 700; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); height: 7px; border-radius: 99px; background: #0f172a; cursor: pointer; }
+    .scale-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+    .seg-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .seg-btn { background: #0f172a; color: var(--muted); border: 1px solid var(--card-border); padding: 9px 6px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: 0.15s; text-align: center; }
+    .seg-btn.active { background: rgba(56, 189, 248, 0.18); color: #fff; border-color: var(--accent); }
+
+    /* Flavor Bars */
+    .bar-row { margin-bottom: 12px; }
+    .bar-head { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; font-weight: 600; }
+    .bar-track { width: 100%; height: 11px; background: #0f172a; border-radius: 99px; overflow: hidden; border: 1px solid #334155; }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.25s ease; }
+
+    /* Extraction Curve SVG */
+    .curve-box { margin-top: 16px; background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px; }
+    .curve-title { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+
+    /* Diagnosis Footer */
+    .diagnosis-box { border-radius: 16px; padding: 16px; border: 1px solid var(--emerald); background: rgba(16, 185, 129, 0.12); transition: 0.25s; }
+    .diag-title { font-size: 1rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .diag-desc { font-size: 0.85rem; color: #e2e8f0; }
+   /* App shell */
+ .tabs { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(8px); padding: 8px 0; margin-bottom: 14px; }
+ .tab-btn { background: var(--card); color: var(--muted); border: 1px solid var(--card-border); padding: 9px 4px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer; text-align: center; }
+ .tab-btn.active { color: #fff; border-color: var(--accent); background: rgba(56, 189, 248, 0.16); }
+ .view { display: none; }
+ .view.active { display: block; }
+ .section-intro { font-size: 0.86rem; color: var(--muted); margin-bottom: 14px; }
+ h2.section-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+ /* Recipes */
+ .recipe-list { display: grid; gap: 12px; }
+ .recipe { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; }
+ .recipe-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+ .recipe h3 { font-size: 1rem; font-weight: 800; }
+ .recipe .tag { font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+ .tag-hot { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.35); }
+ .tag-cold { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.35); }
+ .tag-machine { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); }
+ .recipe-desc { font-size: 0.84rem; color: var(--muted); margin-bottom: 12px; }
+ .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 12px; }
+ .spec { background: #0f172a; border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 10px; }
+ .spec small { display: block; font-size: 0.7rem; color: var(--muted); }
+ .spec b { font-size: 0.9rem; }
+ .steps { list-style: none; counter-reset: step; margin-bottom: 12px; }
+ .steps li { counter-increment: step; position: relative; padding: 8px 40px 8px 0; border-bottom: 1px dashed #334155; font-size: 0.85rem; }
+ .steps li:last-child { border-bottom: none; }
+ .steps li::before { content: counter(step); position: absolute; right: 0; top: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(245, 158, 11, 0.18); color: var(--amber); font-weight: 800; font-size: 0.78rem; display: flex; align-items: center; justify-content: center; }
+ .steps .t { color: var(--accent); font-weight: 700; font-size: 0.78rem; margin-left: 6px; }
+ .recipe-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+ .btn { background: var(--accent); color: #0f172a; border: none; padding: 9px 14px; border-radius: 10px; font-size: 0.82rem; font-weight: 800; cursor: pointer; }
+ .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
+ /* Timer */
+ .timer-panel { text-align: center; }
+ .timer-clock { font-size: 3.2rem; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; margin: 6px 0; direction: ltr; }
+ .timer-step { font-size: 1rem; font-weight: 700; min-height: 3em; margin-bottom: 6px; }
+ .timer-next { font-size: 0.8rem; color: var(--muted); min-height: 1.5em; margin-bottom: 12px; }
+ .timer-water { font-size: 0.9rem; color: var(--amber); font-weight: 700; margin-bottom: 12px; }
+ .progress { height: 9px; background: #0f172a; border: 1px solid #334155; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+ .progress > div { height: 100%; width: 0; background: var(--accent); transition: width 0.3s linear; }
+ select, input[type="number"] { width: 100%; background: #0f172a; color: var(--text); border: 1px solid var(--card-border); border-radius: 10px; padding: 9px 10px; font-size: 0.9rem; }
+ /* Calculator */
+ .calc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+ .calc-grid label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 5px; }
+ .calc-result { background: #0f172a; border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; font-size: 0.88rem; }
+ .calc-result b { color: var(--amber); }
+ /* Guide */
+ .guide-grid { display: grid; gap: 12px; }
+ @media (min-width: 768px) { .guide-grid { grid-template-columns: 1fr 1fr; } }
+ .panel ul.plain { list-style: none; }
+ .panel ul.plain li { font-size: 0.85rem; padding: 6px 0; border-bottom: 1px dashed #334155; }
+ .panel ul.plain li:last-child { border-bottom: none; }
+ .panel ul.plain b { color: #fff; }
+ table.trouble { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+ table.trouble th, table.trouble td { text-align: right; padding: 9px 8px; border-bottom: 1px solid #334155; vertical-align: top; }
+ table.trouble th { color: var(--muted); font-size: 0.75rem; }
+ details { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+ details summary { cursor: pointer; font-weight: 700; font-size: 0.88rem; }
+ details p { font-size: 0.84rem; color: #e2e8f0; margin-top: 8px; }
+ footer { text-align: center; font-size: 0.75rem; color: var(--muted); margin: 22px 0 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-wrap">
+      <h1>☕ V60 Flash Brew Lab</h1>
+      <p>وصفات قهوة V60 وطريقة تحضيرها خطوة بخطوة — يدوياً أو على ماكينة Philips Series 2200</p>
+    </div>
+    <span class="badge">Philips EP2224/43</span>
+  </header>
+
+  <nav class="tabs" aria-label="الأقسام">
+    <button class="tab-btn active" data-view="recipes">📖 الوصفات</button>
+    <button class="tab-btn" data-view="timer">⏱️ المؤقت</button>
+    <button class="tab-btn" data-view="lab">🧪 المختبر</button>
+    <button class="tab-btn" data-view="guide">📐 الأساسيات</button>
+    <button class="tab-btn" data-view="help">🛠️ المشاكل</button>
+  </nav>
+
+  <!-- Recipes -->
+  <section class="view active" id="view-recipes">
+    <h2 class="section-title">وصفات V60</h2>
+    <p class="section-intro">اختر وصفة، جهّز الأدوات، ثم اضغط «ابدأ التحضير» ليرشدك المؤقت في كل صبّة. الأوزان بالجرام (1 مل ماء = 1 جرام).</p>
+    <div class="recipe-list" id="recipe-list"></div>
+  </section>
+
+  <!-- Guided timer -->
+  <section class="view" id="view-timer">
+    <div class="panel timer-panel">
+      <div class="control-group" style="text-align:right">
+        <div class="control-header"><span>الوصفة</span></div>
+        <select id="timer-recipe"></select>
+      </div>
+      <div class="timer-clock" id="timer-clock">0:00</div>
+      <div class="progress"><div id="timer-progress"></div></div>
+      <div class="timer-water" id="timer-water"></div>
+      <div class="timer-step" id="timer-step">اضغط «ابدأ» عندما تكون جاهزاً.</div>
+      <div class="timer-next" id="timer-next"></div>
+      <div class="recipe-actions" style="justify-content:center">
+        <button class="btn" id="timer-toggle">▶️ ابدأ</button>
+        <button class="btn ghost" id="timer-reset">↺ إعادة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lab -->
+  <section class="view" id="view-lab">
+    <h2 class="section-title">مختبر V60 Flash Brew البارد</h2>
+    <p class="section-intro">محاكاة الاستخلاص الهيدروليكي لماكينة Philips Series 2200 (EP2224/43). جرّب الطحن والحرارة وقوة البن والثلج لترى أثرها على الطعم. القيم تقديرية للمساعدة على ضبط الماكينة، وليست قياسات مخبرية.</p>
+
+
+  <div class="presets">
+    <button class="preset-btn active" onclick="applyPreset(7, 3, 3, 40, this)">⭐ وصفة V60 باردة مثالية</button>
+    <button class="preset-btn" onclick="applyPreset(3, 2, 3, 35, this)">🧊 إسبريسو مثلج تقليدي</button>
+    <button class="preset-btn" onclick="applyPreset(11, 1, 1, 45, this)">🍋 استخلاص ناقص (حامض)</button>
+    <button class="preset-btn" onclick="applyPreset(2, 3, 3, 25, this)">🔥 استخلاص زائد (مر)</button>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">الضغط الفعلي داخل القرص</div>
+      <div class="kpi-value"><span id="kpi-pressure">5.4</span> <small style="font-size:0.8rem;font-weight:500;color:#38bdf8">بار</small></div>
+      <div class="kpi-sub">من أصل 15 بار (مضخة الماكينة)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">معدل التدفق وزمن الاستخلاص</div>
+      <div class="kpi-value"><span id="kpi-flow">2.9</span> <small style="font-size:0.8rem;font-weight:500;color:#38bdf8">مل/ث</small></div>
+      <div class="kpi-sub">الزمن التقريبي: <strong id="kpi-time">38</strong> ثانية</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">نسبة الاستخلاص (EY%)</div>
+      <div class="kpi-value"><span id="kpi-ey">19.6%</span></div>
+      <div class="kpi-sub" id="kpi-ey-status" style="color:#10b981;font-weight:700;">في النطاق المثالي (18%–22%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">محاكاة قوام V60 المقطرة</div>
+      <div class="kpi-value"><span id="kpi-v60">84%</span></div>
+      <div class="kpi-sub">وضوح الإيحاءات وخفة القوام</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <!-- Controls Panel -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>⚙️ متغيرات الإعداد على الماكينة</span>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span>درجة الطحن السيراميكية (1–12)</span>
+          <span class="control-val" id="val-grind">المستوى 7 (متوسط الخشونة)</span>
+        </div>
+        <input type="range" id="inp-grind" min="1" max="12" step="1" value="7" oninput="updateSim()" >
+        <div class="scale-labels">
+          <span>1 (ناعم جداً - إسبريسو)</span>
+          <span>6 (متوسط)</span>
+          <span>12 (خشن - تقطير)</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span>درجة حرارة الماء (Aroma Extract)</span>
+          <span class="control-val" id="val-temp">المستوى 3 (98°C)</span>
+        </div>
+        <div class="seg-group" id="seg-temp">
+          <button class="seg-btn" onclick="setTemp(1)">منخفض (90°C)</button>
+          <button class="seg-btn" onclick="setTemp(2)">متوسط (94°C)</button>
+          <button class="seg-btn active" onclick="setTemp(3)">مرتفع (98°C)</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span>قوة النكهة / كمية البن (Aroma Strength)</span>
+          <span class="control-val" id="val-strength">المستوى 3 (~11g)</span>
+        </div>
+        <div class="seg-group" id="seg-strength">
+          <button class="seg-btn" onclick="setStrength(1)">🫘 خفيف (~7g)</button>
+          <button class="seg-btn" onclick="setStrength(2)">🫘🫘 متوسط (~9g)</button>
+          <button class="seg-btn active" onclick="setStrength(3)">🫘🫘🫘 قوي (~11g)</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span>نسبة الثلج في الكوب (Flash Chill Bypass)</span>
+          <span class="control-val" id="val-ice">40% (90g ثلج + 110ml ماء)</span>
+        </div>
+        <input type="range" id="inp-ice" min="20" max="50" step="5" value="40" oninput="updateSim()" >
+        <div class="scale-labels">
+          <span>20% (تركيز أعلى)</span>
+          <span>35% (متوازن)</span>
+          <span>50% (تخفيف عالٍ)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flavor & Extraction Curve Panel -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>📊 توازن النكهة ومنحنى الاستخلاص</span>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-head"><span>🍋 الحموضة الفاكهية (Acidity)</span><span id="txt-acid">69%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-acid" style="width:69%;background:#f59e0b;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-head"><span>🍯 الحلاوة المتوازنة (Sweetness)</span><span id="txt-sweet">89%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-sweet" style="width:89%;background:#10b981;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-head"><span>🍫 المرارة (Bitterness)</span><span id="txt-bitter">38%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-bitter" style="width:38%;background:#f43f5e;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-head"><span>💧 نقاء القوام ومحاكاة V60 (Clarity)</span><span id="txt-clarity">84%</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-clarity" style="width:84%;background:#38bdf8;"></div></div>
+      </div>
+
+      <div class="curve-box">
+        <div class="curve-title">
+          <span>منحنى منطقة الاستخلاص القياسية (SCA 18%–22%)</span>
+          <span id="curve-coord">EY: 19.6%</span>
+        </div>
+        <svg viewBox="0 0 320 90" width="100%" height="90">
+          <!-- Under-extracted zone -->
+          <rect x="10" y="15" width="95" height="50" fill="rgba(245, 158, 11, 0.18)" rx="4" ></rect>
+          <!-- Ideal Sweet Spot zone (18% - 22%) -->
+          <rect x="105" y="15" width="110" height="50" fill="rgba(16, 185, 129, 0.22)" stroke="#10b981" stroke-dasharray="3,3" rx="4" ></rect>
+          <!-- Over-extracted zone -->
+          <rect x="215" y="15" width="95" height="50" fill="rgba(244, 63, 94, 0.18)" rx="4" ></rect>
+
+          <!-- Labels -->
+          <text x="57" y="44" fill="#fbbf24" font-size="9" text-anchor="middle" font-weight="bold">ناقص (&lt;18%)</text>
+          <text x="160" y="44" fill="#34d399" font-size="9" text-anchor="middle" font-weight="bold">مثالي (18%–22%)</text>
+          <text x="262" y="44" fill="#fb7185" font-size="9" text-anchor="middle" font-weight="bold">زائد (&gt;22%)</text>
+
+          <!-- Dynamic Marker -->
+          <circle id="ey-dot" cx="150" cy="40" r="7" fill="#ffffff" stroke="#10b981" stroke-width="3" ></circle>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diagnosis Box -->
+  <div class="diagnosis-box" id="diag-box">
+    <div class="diag-title" id="diag-title">✅ تشخيص: كوب V60 Flash Brew متوازن ومثالي!</div>
+    <div class="diag-desc" id="diag-desc">
+      الطحن المتوسط (7) مع حرارة مرتفعة (98°C) وقوة بن كاملة (3) على زر Coffee يخفض ضغط القرص إلى ~5.4 بار ويمرر الماء بمعدل 2.9 مل/ثانية مباشرة فوق 90 جرام ثلج، مما يحبس الروائح العطرية ويمنحك حلاوة عالية وحموضة فاكهية نقية بدون مرارة.
+    </div>
+  </div>
+
+  
+  </section>
+
+  <!-- Basics -->
+  <section class="view" id="view-guide">
+    <div class="panel" style="margin-bottom:14px">
+      <div class="panel-title"><span>🧮 حاسبة النسبة</span></div>
+      <div class="calc-grid">
+        <div>
+          <label for="calc-coffee">كمية البن (جرام)</label>
+          <input type="number" id="calc-coffee" min="5" max="60" value="15">
+        </div>
+        <div>
+          <label for="calc-ratio">النسبة</label>
+          <select id="calc-ratio">
+            <option value="15">1:15 (أقوى)</option>
+            <option value="16" selected>1:16 (متوازن)</option>
+            <option value="17">1:17 (أخف)</option>
+          </select>
+        </div>
+        <div>
+          <label for="calc-iced">طريقة التقديم</label>
+          <select id="calc-iced">
+            <option value="0">ساخن</option>
+            <option value="40">مثلج (40% ثلج)</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-result" id="calc-result"></div>
+    </div>
+
+    <div class="guide-grid">
+      <div class="panel">
+        <div class="panel-title"><span>🧰 الأدوات</span></div>
+        <ul class="plain">
+          <li><b>قمع V60</b> (مقاس 01 لكوب واحد، 02 حتى 3 أكواب) مع فلاتر ورقية مناسبة.</li>
+          <li><b>غلاية بعنق رفيع</b> للتحكم في سرعة الصب واتجاهه.</li>
+          <li><b>ميزان بدقة 0.1 جرام</b> مع مؤقت.</li>
+          <li><b>مطحنة بن</b> بشفرات مسطحة أو مخروطية للحصول على طحن متجانس.</li>
+          <li><b>بن مختص طازج</b> محمص منذ 7–30 يوماً.</li>
+          <li><b>ماء مفلتر</b> قليل الأملاح؛ الماء يشكّل أكثر من 98% من الكوب.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><span>🎯 المتغيرات الأساسية</span></div>
+        <ul class="plain">
+          <li><b>النسبة:</b> بين 1:15 و1:17. ابدأ بـ 1:16 (15 جرام بن لكل 240 جرام ماء).</li>
+          <li><b>الطحن:</b> متوسط إلى متوسط-ناعم، يشبه ملح الطعام الخشن.</li>
+          <li><b>الحرارة:</b> 92–96°C. التحميص الفاتح يحتاج حرارة أعلى، والغامق أقل (88–90°C).</li>
+          <li><b>التزهير (Bloom):</b> ضعف وزن البن ماءً لمدة 30–45 ثانية لإطلاق ثاني أكسيد الكربون.</li>
+          <li><b>الزمن الكلي:</b> 2:30–3:30 دقيقة لكوب واحد.</li>
+          <li><b>نسبة الاستخلاص المثالية:</b> 18%–22% حسب معيار SCA.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><span>📝 أفضل الممارسات</span></div>
+        <ul class="plain">
+          <li>اشطف الفلتر الورقي بالماء الساخن لإزالة طعم الورق وتسخين القمع، ثم تخلّص من ماء الشطف.</li>
+          <li>اطحن البن قبل التحضير مباشرة؛ البن المطحون يفقد عطره خلال دقائق.</li>
+          <li>صبّ بحركة دائرية من المركز إلى الخارج وتجنّب الصب على جدار الفلتر مباشرة.</li>
+          <li>حرّك القمع حركة دائرية خفيفة (Swirl) بعد آخر صبّة ليستوي سطح البن.</li>
+          <li>غيّر متغيراً واحداً فقط في كل مرة حتى تعرف أثره على الطعم.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><span>🤖 V60 على ماكينة Philips 2200</span></div>
+        <ul class="plain">
+          <li>الماكينة تعمل بالضغط، لذلك نحاكي V60 بطحن أخشن (المستوى 7) لتخفيف الضغط وتسريع التدفق.</li>
+          <li>اضبط الحرارة على المستوى 3 (الأعلى) وقوة البن على 3 حبات.</li>
+          <li>ضع الثلج في الكوب أولاً ثم استخدم زر Coffee ليسقط المستخلص الساخن على الثلج مباشرة (Flash Chill).</li>
+          <li>غيّر درجة الطحن فقط أثناء عمل المطحنة، كما توصي تعليمات الماكينة.</li>
+          <li>استخدم «المختبر» لتجربة الإعدادات قبل التحضير.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Troubleshooting -->
+  <section class="view" id="view-help">
+    <div class="panel" style="margin-bottom:14px">
+      <div class="panel-title"><span>🛠️ حل مشاكل الطعم</span></div>
+      <table class="trouble">
+        <thead><tr><th>المشكلة</th><th>السبب المحتمل</th><th>الحل</th></tr></thead>
+        <tbody>
+          <tr><td>🍋 حامض حاد ومائي</td><td>استخلاص ناقص: طحن خشن أو ماء بارد أو تحضير سريع.</td><td>نعّم الطحن خطوة واحدة أو ارفع الحرارة 2°C.</td></tr>
+          <tr><td>🔥 مرّ وجاف</td><td>استخلاص زائد: طحن ناعم أو زمن طويل أو ماء حار جداً.</td><td>خشّن الطحن خطوة أو اخفض الحرارة 2°C.</td></tr>
+          <tr><td>💧 خفيف بلا قوام</td><td>بن قليل مقارنة بالماء.</td><td>استخدم نسبة 1:15 بدلاً من 1:17.</td></tr>
+          <tr><td>🐢 تصريف بطيء جداً (+4 دقائق)</td><td>طحن ناعم جداً أو كثرة الغبار الناعم أو الصب على الجدار.</td><td>خشّن الطحن وصبّ في المركز بهدوء.</td></tr>
+          <tr><td>⚡ تصريف سريع (أقل من دقيقتين)</td><td>طحن خشن جداً أو صب قوي يحفر قناة في البن.</td><td>نعّم الطحن وقلّل ارتفاع الصب.</td></tr>
+          <tr><td>🧊 مثلج باهت</td><td>ذوبان ثلج كثير أو نسبة ثلج عالية.</td><td>قلّل الثلج إلى 35% أو ارفع قوة البن.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title" style="margin-bottom:10px">أسئلة شائعة</h2>
+    <details><summary>ما الفرق بين V60 والقهوة الأمريكية؟</summary><p>كلاهما قهوة مقطّرة، لكن V60 يُصب يدوياً فتتحكم في الحرارة وسرعة الصب والتزهير، فيخرج كوب أنقى وأوضح في النكهات والحموضة الفاكهية.</p></details>
+    <details><summary>هل يمكن استخدام بن مطحون جاهز؟</summary><p>نعم، لكن اختر «طحن للتقطير/فلتر» واستهلكه خلال أسبوع وأغلق العلبة جيداً. الطحن الطازج يعطي نتيجة أفضل بوضوح.</p></details>
+    <details><summary>لماذا أصب ضعف وزن البن في التزهير؟</summary><p>البن الطازج يحتوي ثاني أكسيد الكربون الذي يطرد الماء. التزهير يبلل البن بالكامل ويطلق الغاز فيصبح الاستخلاص بعده متجانساً.</p></details>
+    <details><summary>كم يجب أن تكون درجة حرارة الماء إن لم يكن لدي ميزان حرارة؟</summary><p>اغلِ الماء واتركه 30–45 ثانية بعد الغليان؛ ستكون الحرارة تقريباً 93–95°C.</p></details>
+    <details><summary>هل يعمل التطبيق بدون إنترنت؟</summary><p>نعم. بعد فتحه مرة واحدة يمكنك تثبيته على الشاشة الرئيسية لجوال أندرويد من قائمة المتصفح («إضافة إلى الشاشة الرئيسية») واستخدامه بدون اتصال.</p></details>
+  </section>
+
+  <footer>V60 Flash Brew Lab · وصفات وأدلة تحضير قهوة V60 · القيم في المختبر تقريبية لأغراض التعلّم</footer>
+
+  <script>
+    let state = { grind: 7, temp: 3, strength: 3, ice: 40 };
+
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+    function setTemp(t) {
+      state.temp = t;
+      const btns = document.querySelectorAll('#seg-temp .seg-btn');
+      btns.forEach((b, idx) => b.classList.toggle('active', idx + 1 === t));
+      clearPresetActive();
+      updateSim();
+    }
+
+    function setStrength(s) {
+      state.strength = s;
+      const btns = document.querySelectorAll('#seg-strength .seg-btn');
+      btns.forEach((b, idx) => b.classList.toggle('active', idx + 1 === s));
+      clearPresetActive();
+      updateSim();
+    }
+
+    function clearPresetActive() {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    }
+
+    function applyPreset(g, t, s, i, btnEl) {
+      state.grind = g; state.temp = t; state.strength = s; state.ice = i;
+      document.getElementById('inp-grind').value = g;
+      document.getElementById('inp-ice').value = i;
+      setTemp(t);
+      setStrength(s);
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      updateSim();
+    }
+
+    function updateSim() {
+      state.grind = parseInt(document.getElementById('inp-grind').value, 10);
+      state.ice = parseInt(document.getElementById('inp-ice').value, 10);
+
+      const gDesc = state.grind <= 3 ? 'ناعم - إسبريسو' : (state.grind <= 8 ? 'متوسط الخشونة' : 'خشن - تقطير');
+      document.getElementById('val-grind').textContent = `المستوى ${state.grind} (${gDesc})`;
+
+      const tC = 86 + state.temp * 4;
+      document.getElementById('val-temp').textContent = `المستوى ${state.temp} (${tC}°C)`;
+
+      const grams = state.strength === 1 ? '~7g' : (state.strength === 2 ? '~9g' : '~11g');
+      document.getElementById('val-strength').textContent = `المستوى ${state.strength} (${grams})`;
+
+      const iceGrams = Math.round(state.ice * 2.25);
+      const waterMl = 200 - iceGrams;
+      document.getElementById('val-ice').textContent = `${state.ice}% (${iceGrams}g ثلج + ${waterMl}ml ماء)`;
+
+      // Physics model
+      const pressure = clamp(11.5 - (state.grind * 0.65) + (state.strength * 0.8), 2.5, 11.0);
+      const flow = clamp(1.2 + (state.grind * 0.35) - (state.strength * 0.25), 0.8, 5.5);
+      const brewTime = Math.round(waterMl / flow);
+      const ey = clamp(18.5 - ((state.grind - 6) * 0.85) + ((state.temp - 2) * 0.9) + ((state.strength - 2) * 0.5) - ((state.ice - 35) * 0.06), 13.0, 25.0);
+
+      const acidity = Math.round(clamp(85 - ((ey - 16) * 6.5) + (state.ice * 0.2), 10, 95));
+      const sweetness = Math.round(clamp(95 - Math.abs(ey - 20.0) * 14, 15, 98));
+      const bitterness = Math.round(clamp(20 + ((ey - 18) * 11.5), 5, 98));
+      const clarity = Math.round(clamp(62 + (state.grind * 4.5) - (state.strength * 3), 20, 96));
+
+      // Update KPIs
+      document.getElementById('kpi-pressure').textContent = pressure.toFixed(1);
+      document.getElementById('kpi-flow').textContent = flow.toFixed(1);
+      document.getElementById('kpi-time').textContent = brewTime;
+      document.getElementById('kpi-ey').textContent = ey.toFixed(1) + '%';
+      document.getElementById('kpi-v60').textContent = clarity + '%';
+
+      // Bars
+      document.getElementById('txt-acid').textContent = acidity + '%';
+      document.getElementById('bar-acid').style.width = acidity + '%';
+      document.getElementById('txt-sweet').textContent = sweetness + '%';
+      document.getElementById('bar-sweet').style.width = sweetness + '%';
+      document.getElementById('txt-bitter').textContent = bitterness + '%';
+      document.getElementById('bar-bitter').style.width = bitterness + '%';
+      document.getElementById('txt-clarity').textContent = clarity + '%';
+      document.getElementById('bar-clarity').style.width = clarity + '%';
+
+      // SVG Marker (map ey 13..25 to x 15..305)
+      const dotX = clamp(15 + ((ey - 13) / 12) * 290, 15, 305);
+      const dot = document.getElementById('ey-dot');
+      dot.setAttribute('cx', dotX.toFixed(1));
+      document.getElementById('curve-coord').textContent = `EY: ${ey.toFixed(1)}%`;
+
+      const eyStatus = document.getElementById('kpi-ey-status');
+      const diagBox = document.getElementById('diag-box');
+      const diagTitle = document.getElementById('diag-title');
+      const diagDesc = document.getElementById('diag-desc');
+
+      if (ey >= 18.0 && ey <= 21.8 && state.grind >= 5 && state.grind <= 9) {
+        eyStatus.textContent = 'في النطاق المثالي (18%–22%)';
+        eyStatus.style.color = '#10b981';
+        dot.setAttribute('stroke', '#10b981');
+        diagBox.style.borderColor = '#10b981';
+        diagBox.style.background = 'rgba(16, 185, 129, 0.12)';
+        diagTitle.textContent = '✅ تشخيص: كوب V60 Flash Brew متوازن ومثالي!';
+        diagDesc.textContent = `الطحن (${state.grind}) مع حرارة (${tC}°C) يولد ضغطاً معتدلاً (${pressure.toFixed(1)} بار) وتدفقاً (${flow.toFixed(1)} مل/ث) فوق ${iceGrams}g ثلج، مما يمنحك حلاوة عالية (${sweetness}%) وحموضة فاكهية نقية بدون مرارة مزعجة.`;
+      } else if (ey < 18.0) {
+        eyStatus.textContent = 'استخلاص ناقص (<18%)';
+        eyStatus.style.color = '#f59e0b';
+        dot.setAttribute('stroke', '#f59e0b');
+        diagBox.style.borderColor = '#f59e0b';
+        diagBox.style.background = 'rgba(245, 158, 11, 0.12)';
+        diagTitle.textContent = '⚠️ تشخيص: استخلاص ناقص (طعم حامض حاد ومائي)';
+        diagDesc.textContent = `الماء يمر بسرعة عالية (${flow.toFixed(1)} مل/ث) بسبب خشونة الطحن أو انخفاض الحرارة. الحل على Philips EP2224/43: نعم الطحن إلى المستوى 6–7 أو ارفع الحرارة للمستوى 3 (98°C) مع زيادة قوة البن إلى 3.`;
+      } else if (ey > 21.8) {
+        eyStatus.textContent = 'استخلاص زائد (>22%)';
+        eyStatus.style.color = '#f43f5e';
+        dot.setAttribute('stroke', '#f43f5e');
+        diagBox.style.borderColor = '#f43f5e';
+        diagBox.style.background = 'rgba(244, 63, 94, 0.12)';
+        diagTitle.textContent = '🔥 تشخيص: استخلاص زائد (مرارة عالية وقوام ثقيل)';
+        diagDesc.textContent = `الضغط المرتفع (${pressure.toFixed(1)} بار) وبطء التدفق يستخلصان مركبات المرارة الخشبية. الحل لمحاكاة V60: خشن الطحن إلى المستوى 7 أو اخفض درجة الحرارة للمستوى 2 (94°C).`;
+      } else {
+        eyStatus.textContent = 'طابع إسبريسو مثلج مركز';
+        eyStatus.style.color = '#38bdf8';
+        dot.setAttribute('stroke', '#38bdf8');
+        diagBox.style.borderColor = '#38bdf8';
+        diagBox.style.background = 'rgba(56, 189, 248, 0.12)';
+        diagTitle.textContent = '🧊 تشخيص: أقرب إلى Iced Americano منه إلى V60';
+        diagDesc.textContent = `نسبة الاستخلاص متوازنة (${ey.toFixed(1)}%) لكن الطحن الناعم (${state.grind}) يرفع الضغط إلى ${pressure.toFixed(1)} بار، مما يعطي قوام إسبريسو ثقيل. ارفع الطحن إلى 7 للحصول على نقاء V60.`;
+      }
+    }
+
+        // Recipes: steps carry the start time (s) and the cumulative scale target (g)
+    const RECIPES = [
+      {
+        id: 'classic', name: 'V60 الكلاسيكي الساخن', tag: ['tag-hot', 'ساخن'],
+        desc: 'وصفة يومية متوازنة لكوب واحد، تبرز الحلاوة والحموضة الفاكهية بوضوح.',
+        specs: [['البن', '15 جرام'], ['الماء', '250 جرام'], ['النسبة', '1:16.7'], ['الحرارة', '94°C'], ['الطحن', 'متوسط-ناعم'], ['الزمن', '3:00']],
+        prep: ['اشطف الفلتر بالماء الساخن وتخلّص من الماء.', 'ضع 15 جرام بن مطحون وسوِّ سطحه، ثم صفّر الميزان.'],
+        steps: [
+          { at: 0, water: 45, text: 'التزهير: صبّ 45 جرام ماء ببطء حتى يتبلل كل البن، ثم حرّك القمع حركة دائرية خفيفة.' },
+          { at: 45, water: 150, text: 'صبّ ببطء بحركة دائرية حتى يصل الميزان إلى 150 جرام.' },
+          { at: 75, water: 250, text: 'الصبّة الأخيرة: أكمل حتى 250 جرام.' },
+          { at: 105, water: 250, text: 'حرّك القمع حركة دائرية خفيفة ليستوي سطح البن، واترك الماء يتصرّف.' },
+          { at: 180, water: 250, text: 'انتهى التصريف. أزل القمع، حرّك القهوة، واستمتع ☕' }
+        ]
+      },
+      {
+        id: 'kasuya', name: 'طريقة 4:6 (Tetsu Kasuya)', tag: ['tag-hot', 'ساخن'],
+        desc: 'طريقة بطل العالم 2016: أول 40% من الماء تتحكم في الحلاوة والحموضة، وآخر 60% في القوة.',
+        specs: [['البن', '20 جرام'], ['الماء', '300 جرام'], ['النسبة', '1:15'], ['الحرارة', '92°C'], ['الطحن', 'خشن'], ['الزمن', '3:30']],
+        prep: ['اشطف الفلتر وتخلّص من الماء.', 'ضع 20 جرام بن مطحون خشن وصفّر الميزان.'],
+        steps: [
+          { at: 0, water: 50, text: 'الصبّة 1: صبّ 50 جرام (صبّة أقل = كوب أكثر حلاوة).' },
+          { at: 45, water: 120, text: 'الصبّة 2: صبّ حتى 120 جرام (يكمل مرحلة الـ 40%).' },
+          { at: 90, water: 180, text: 'الصبّة 3: صبّ حتى 180 جرام.' },
+          { at: 135, water: 240, text: 'الصبّة 4: صبّ حتى 240 جرام.' },
+          { at: 165, water: 300, text: 'الصبّة 5: صبّ حتى 300 جرام.' },
+          { at: 210, water: 300, text: 'أزل القمع حتى لو بقي قليل من الماء. حرّك القهوة وقدّمها ☕' }
+        ]
+      },
+      {
+        id: 'iced', name: 'V60 مثلج (الطريقة اليابانية)', tag: ['tag-cold', 'بارد'],
+        desc: 'يُقطّر نصف الماء ساخناً مباشرة فوق الثلج فيحبس العطر ويبرد الكوب فوراً.',
+        specs: [['البن', '20 جرام'], ['ماء ساخن', '160 جرام'], ['الثلج', '140 جرام'], ['الحرارة', '94°C'], ['الطحن', 'متوسط-ناعم'], ['الزمن', '2:30']],
+        prep: ['ضع 140 جرام ثلج في الإبريق أو الكوب تحت القمع.', 'اشطف الفلتر وتخلّص من الماء (لا تسكبه على الثلج).', 'ضع 20 جرام بن وصفّر الميزان.'],
+        steps: [
+          { at: 0, water: 40, text: 'التزهير: صبّ 40 جرام ماء وحرّك القمع بلطف.' },
+          { at: 45, water: 100, text: 'صبّ حتى 100 جرام بحركة دائرية.' },
+          { at: 75, water: 160, text: 'صبّ حتى 160 جرام.' },
+          { at: 105, water: 160, text: 'حرّك القمع واترك القهوة تتقطّر فوق الثلج.' },
+          { at: 150, water: 160, text: 'انتهى. حرّك الإبريق ليذوب الثلج المتبقي وقدّمها على ثلج جديد 🧊' }
+        ]
+      },
+      {
+        id: 'machine', name: 'V60 Flash Brew على Philips EP2224/43', tag: ['tag-machine', 'ماكينة'],
+        desc: 'محاكاة V60 بارد بالماكينة الأوتوماتيكية بدون قمع، بالإعدادات المجرّبة في «المختبر».',
+        specs: [['الطحن', 'المستوى 7'], ['الحرارة', 'المستوى 3 (98°C)'], ['قوة البن', '3 حبات (~11g)'], ['الثلج', '90 جرام'], ['المستخلص', '~110 مل'], ['الزمن', '~40 ث']],
+        prep: ['اضبط الطحن على المستوى 7 أثناء دوران المطحنة.', 'اضبط الحرارة على المستوى 3 وقوة البن على 3 حبات.', 'ضع 90 جرام ثلج في كوب شفاف تحت المصب.'],
+        steps: [
+          { at: 0, water: 0, text: 'اضغط زر Coffee. سيبدأ الطحن ثم الاستخلاص فوق الثلج مباشرة.' },
+          { at: 10, water: 0, text: 'راقب التدفق: يجب أن يكون خيطاً رفيعاً متصلاً بلون عسلي.' },
+          { at: 40, water: 0, text: 'عند توقف الماكينة (~110 مل)، حرّك الكوب 10 ثوانٍ ليبرد المستخلص.' },
+          { at: 50, water: 0, text: 'أضف ثلجاً إضافياً عند الحاجة وقدّمها فوراً 🧊' }
+        ]
+      },
+      {
+        id: 'iced-espresso', name: 'إسبريسو مثلج على Philips EP2224/43', tag: ['tag-machine', 'ماكينة'],
+        desc: 'كوب مركّز بقوام أثقل لمن يفضّل طابع الإسبريسو، مع حلاوة جيدة ومرارة لطيفة.',
+        specs: [['الطحن', 'المستوى 3'], ['الحرارة', 'المستوى 2 (94°C)'], ['قوة البن', '3 حبات'], ['الثلج', '~80 جرام'], ['المستخلص', '~40 مل'], ['الزمن', '~25 ث']],
+        prep: ['اضبط الطحن على المستوى 3 أثناء دوران المطحنة.', 'اضبط الحرارة على المستوى 2 وقوة البن على 3 حبات.', 'املأ الكوب بالثلج.'],
+        steps: [
+          { at: 0, water: 0, text: 'اضغط زر Espresso فوق الثلج.' },
+          { at: 25, water: 0, text: 'حرّك الكوب، وأضف ماءً بارداً (أمريكانو مثلج) أو حليباً بارداً (لاتيه مثلج) حسب الرغبة.' },
+          { at: 35, water: 0, text: 'جاهز للتقديم 🧊' }
+        ]
+      }
+    ];
+
+    const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+    function renderRecipes() {
+      const list = document.getElementById('recipe-list');
+      list.innerHTML = RECIPES.map(r => `
+        <article class="recipe">
+          <div class="recipe-head"><h3>${r.name}</h3><span class="tag ${r.tag[0]}">${r.tag[1]}</span></div>
+          <p class="recipe-desc">${r.desc}</p>
+          <div class="specs">${r.specs.map(([k, v]) => `<div class="spec"><small>${k}</small><b>${v}</b></div>`).join('')}</div>
+          <ol class="steps">
+            ${r.prep.map(p => `<li><span class="t">تجهيز</span>${p}</li>`).join('')}
+            ${r.steps.map(s => `<li><span class="t">${fmt(s.at)}</span>${s.text}${s.water ? ` <span class="t">(${s.water}g)</span>` : ''}</li>`).join('')}
+          </ol>
+          <div class="recipe-actions">
+            <button class="btn" data-brew="${r.id}">⏱️ ابدأ التحضير</button>
+            ${r.tag[0] === 'tag-machine' ? `<button class="btn ghost" data-lab="${r.id}">🧪 افتح في المختبر</button>` : ''}
+          </div>
+        </article>`).join('');
+
+      document.getElementById('timer-recipe').innerHTML =
+        RECIPES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+    }
+
+    // Guided brew timer
+    const timer = { recipe: RECIPES[0], elapsed: 0, startedAt: 0, running: false, handle: null };
+
+    function selectTimerRecipe(id) {
+      timer.recipe = RECIPES.find(r => r.id === id) || RECIPES[0];
+      document.getElementById('timer-recipe').value = timer.recipe.id;
+      resetTimer();
+    }
+
+    function renderTimer() {
+      const r = timer.recipe;
+      const steps = r.steps;
+      const total = steps[steps.length - 1].at;
+      const t = timer.elapsed;
+      let idx = -1;
+      steps.forEach((s, i) => { if (t >= s.at) idx = i; });
+
+      document.getElementById('timer-clock').textContent = fmt(t);
+      document.getElementById('timer-progress').style.width = Math.min(100, (t / total) * 100) + '%';
+
+      const stepEl = document.getElementById('timer-step');
+      const nextEl = document.getElementById('timer-next');
+      const waterEl = document.getElementById('timer-water');
+      if (!timer.running && t === 0) {
+        stepEl.textContent = 'قبل البدء: ' + r.prep.join(' ');
+        nextEl.textContent = 'اضغط «ابدأ» مع أول صبّة.';
+        waterEl.textContent = '';
+        return;
+      }
+      const cur = steps[Math.max(idx, 0)];
+      const next = steps[idx + 1];
+      stepEl.textContent = cur.text;
+      waterEl.textContent = cur.water ? `🎯 هدف الميزان: ${cur.water} جرام` : '';
+      nextEl.textContent = next ? `التالي عند ${fmt(next.at)}: ${next.text}` : '';
+      if (t >= total) stopTimer(true);
+    }
+
+    function tick() {
+      timer.elapsed = (Date.now() - timer.startedAt) / 1000;
+      const prevStep = timer.lastStep;
+      const idx = timer.recipe.steps.filter(s => timer.elapsed >= s.at).length;
+      if (prevStep !== undefined && idx !== prevStep && navigator.vibrate) navigator.vibrate(200);
+      timer.lastStep = idx;
+      renderTimer();
+    }
+
+    function startTimer() {
+      timer.startedAt = Date.now() - timer.elapsed * 1000;
+      timer.running = true;
+      timer.handle = setInterval(tick, 250);
+      document.getElementById('timer-toggle').textContent = '⏸️ إيقاف مؤقت';
+      tick();
+    }
+
+    function stopTimer(done) {
+      clearInterval(timer.handle);
+      timer.running = false;
+      document.getElementById('timer-toggle').textContent = done ? '▶️ ابدأ من جديد' : '▶️ متابعة';
+      if (done) { timer.elapsed = 0; timer.lastStep = undefined; }
+    }
+
+    function resetTimer() {
+      stopTimer(false);
+      timer.elapsed = 0;
+      timer.lastStep = undefined;
+      document.getElementById('timer-toggle').textContent = '▶️ ابدأ';
+      renderTimer();
+    }
+
+    // Ratio calculator
+    function updateCalc() {
+      const coffee = clamp(parseFloat(document.getElementById('calc-coffee').value) || 0, 0, 100);
+      const ratio = parseInt(document.getElementById('calc-ratio').value, 10);
+      const icePct = parseInt(document.getElementById('calc-iced').value, 10);
+      const total = Math.round(coffee * ratio);
+      const ice = Math.round(total * icePct / 100);
+      const hot = total - ice;
+      const bloom = Math.round(coffee * 2);
+      document.getElementById('calc-result').innerHTML = icePct
+        ? `☕ ${coffee} جرام بن ← <b>${hot} جرام ماء ساخن</b> + <b>${ice} جرام ثلج</b> في الإبريق.<br>التزهير: ${bloom} جرام لمدة 45 ثانية، ثم أكمل الماء الساخن على صبّتين.`
+        : `☕ ${coffee} جرام بن ← <b>${total} جرام ماء</b>.<br>التزهير: ${bloom} جرام لمدة 45 ثانية، ثم أكمل الماء على صبّتين أو ثلاث. الناتج تقريباً ${Math.round(total - coffee * 2)} مل قهوة.`;
+    }
+
+    // Tabs
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+      if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+      window.scrollTo({ top: 0 });
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+
+    document.getElementById('recipe-list').addEventListener('click', e => {
+      const brew = e.target.closest('[data-brew]');
+      const lab = e.target.closest('[data-lab]');
+      if (brew) { selectTimerRecipe(brew.dataset.brew); showView('timer'); }
+      if (lab) {
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        if (lab.dataset.lab === 'machine') applyPreset(7, 3, 3, 40, presetBtns[0]);
+        else applyPreset(3, 2, 3, 35, presetBtns[1]);
+        showView('lab');
+      }
+    });
+
+    renderRecipes();
+    document.getElementById('timer-recipe').addEventListener('change', e => selectTimerRecipe(e.target.value));
+    document.getElementById('timer-toggle').addEventListener('click', () => timer.running ? stopTimer(false) : startTimer());
+    document.getElementById('timer-reset').addEventListener('click', resetTimer);
+    ['calc-coffee', 'calc-ratio', 'calc-iced'].forEach(id => document.getElementById(id).addEventListener('input', updateCalc));
+
+    updateSim();
+    updateCalc();
+    renderTimer();
+    const initial = location.hash.slice(1);
+    if (document.getElementById('view-' + initial)) showView(initial);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
